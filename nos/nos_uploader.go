@@ -32,10 +32,6 @@ func (nu *nosUploader) saveToNos(hashValue string, fh FileHeader, info ImageInfo
 	if info.Format == "jpeg" {
 		info.Format = "jpg"
 	}
-	ext := filepath.Ext(fh.Filename)
-	if ext == "jpeg" {
-		ext = "jpg"
-	}
 
 	// Nos 只允许 最大 100MB 的文件
 	_, err = nu.client.PutObjectByStream(&model.PutObjectRequest{
@@ -45,7 +41,7 @@ func (nu *nosUploader) saveToNos(hashValue string, fh FileHeader, info ImageInfo
 		Metadata: &model.ObjectMetadata{
 			ContentLength: fh.Size,
 			Metadata: map[string]string{
-				nosconst.CONTENT_TYPE: mime.TypeByExtension(ext),
+				nosconst.CONTENT_TYPE: mime.TypeByExtension("." + info.Format),
 			},
 		},
 	})
