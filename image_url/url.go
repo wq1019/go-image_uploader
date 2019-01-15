@@ -67,7 +67,7 @@ func Generate(ctx context.Context, hashValue string, opt ...Option) (string, err
 	return url.Generate(hashValue, opt...), nil
 }
 
-func MustGenerate(ctx context.Context, hashValue string, opt ...Option) (string) {
+func MustGenerate(ctx context.Context, hashValue string, opt ...Option) string {
 	if u, err := Generate(ctx, hashValue, opt...); err != nil {
 		panic(err)
 	} else {

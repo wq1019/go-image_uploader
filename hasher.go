@@ -1,11 +1,11 @@
 package image_uploader
 
 import (
-	"io"
 	"crypto/md5"
 	"encoding/hex"
-	"strings"
 	"errors"
+	"io"
+	"strings"
 )
 
 type HashFunc func(file File) (string, error)

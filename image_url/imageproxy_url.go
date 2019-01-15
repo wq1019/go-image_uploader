@@ -1,8 +1,8 @@
 package image_url
 
 import (
-	"strings"
 	"strconv"
+	"strings"
 )
 
 type imageproxyURL struct {

@@ -1,13 +1,13 @@
 package image_uploader
 
 import (
-	"io"
 	"context"
 	"errors"
-	"io/ioutil"
-	"os"
-	"net/http"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"net/http"
+	"os"
 )
 
 type File interface {
@@ -26,9 +26,9 @@ type Uploader interface {
 	UploadFromURL(u string, filename string) (*Image, error)
 }
 
-func removeFile(f *os.File) {
-	f.Close()
-	os.Remove(f.Name())
+func RemoveFile(f *os.File) {
+	_ = f.Close()
+	_ = os.Remove(f.Name())
 }
 
 func DownloadImage(u string) (f *os.File, size int64, err error) {
@@ -39,14 +39,14 @@ func DownloadImage(u string) (f *os.File, size int64, err error) {
 	resp, err := http.Get(u)
 
 	if err != nil {
-		removeFile(f)
+		RemoveFile(f)
 		return nil, 0, fmt.Errorf("http.Get image faild. err=%+v", err)
 	}
 
 	size, err = io.Copy(f, resp.Body)
 
 	if err != nil {
-		removeFile(f)
+		RemoveFile(f)
 		return nil, 0, fmt.Errorf(" io.Copy faild. err=%+v", err)
 	}
 
@@ -60,5 +60,3 @@ func Upload(ctx context.Context, fh FileHeader) (*Image, error) {
 	}
 	return u.Upload(fh)
 }
-
-

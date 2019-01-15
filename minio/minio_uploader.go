@@ -1,10 +1,11 @@
-package image_uploader
+package minio
 
 import (
 	"github.com/minio/minio-go"
+	. "github.com/wq1019/go-image_uploader"
+	"io"
 	"mime"
 	"path/filepath"
-	"io"
 )
 
 type minioUploader struct {
@@ -25,8 +26,8 @@ func (mu *minioUploader) saveToMinio(hashValue string, fh FileHeader, info Image
 		return err
 	}
 	// 在 apline 镜像中 mime.TypeByExtension 只能用 jpg
-	if info.format == "jpeg" {
-		info.format = "jpg"
+	if info.Format == "jpeg" {
+		info.Format = "jpg"
 	}
 
 	_, err = mu.minioClient.PutObject(
@@ -34,13 +35,13 @@ func (mu *minioUploader) saveToMinio(hashValue string, fh FileHeader, info Image
 		name,
 		fh.File,
 		fh.Size,
-		minio.PutObjectOptions{ContentType: mime.TypeByExtension("." + info.format)},
+		minio.PutObjectOptions{ContentType: mime.TypeByExtension("." + info.Format)},
 	)
 	return err
 }
 
 func (mu *minioUploader) Upload(fh FileHeader) (*Image, error) {
-	info, err := DecodeImageInfo(fh.File)
+	info, err := DecodeImageInfo(fh)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +60,7 @@ func (mu *minioUploader) Upload(fh FileHeader) (*Image, error) {
 		return nil, err
 	}
 
-	return saveToStore(mu.s, hashValue, fh.Filename, info)
+	return SaveToStore(mu.s, hashValue, fh.Filename, info)
 }
 
 func (mu *minioUploader) UploadFromURL(u string, filename string) (*Image, error) {
@@ -72,7 +73,7 @@ func (mu *minioUploader) UploadFromURL(u string, filename string) (*Image, error
 		return nil, err
 	}
 
-	defer removeFile(file)
+	defer RemoveFile(file)
 
 	fh := FileHeader{
 		Filename: filename,

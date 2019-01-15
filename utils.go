@@ -1,35 +1,38 @@
 package image_uploader
 
 import (
-	"io"
 	"image"
 	_ "image/gif"
 	_ "image/jpeg"
 	_ "image/png"
+	"io"
 	// todo 下面这两个类型可以考虑不要
 	//_ "golang.org/x/image/bmp"
 	//_ "golang.org/x/image/tiff"
 )
 
 type ImageInfo struct {
-	width, height uint
-	format        string
+	Width  uint
+	Height uint
+	Format string
+	Size   int64
 }
 
-func DecodeImageInfo(file File) (info ImageInfo, err error) {
-	_, err = file.Seek(0, io.SeekStart)
+func DecodeImageInfo(fh FileHeader) (info ImageInfo, err error) {
+	_, err = fh.File.Seek(0, io.SeekStart)
 	if err != nil {
 		return
 	}
-	config, format, err := image.DecodeConfig(file)
+	config, format, err := image.DecodeConfig(fh.File)
 	if err != nil {
 		return ImageInfo{}, err
 	}
 
 	return ImageInfo{
-		width:  uint(config.Width),
-		height: uint(config.Height),
-		format: format,
+		Width:  uint(config.Width),
+		Height: uint(config.Height),
+		Format: format,
+		Size:   fh.Size,
 	}, nil
 
 }

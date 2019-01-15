@@ -1,10 +1,11 @@
-package image_uploader
+package afero
 
 import (
 	"github.com/spf13/afero"
+	. "github.com/wq1019/go-image_uploader"
 	"io"
-	"path/filepath"
 	"os"
+	"path/filepath"
 )
 
 type aferoUploader struct {
@@ -23,12 +24,11 @@ func (au *aferoUploader) saveToFs(hashValue string, f File) error {
 	if err != nil {
 		return err
 	}
-	baseDir:=filepath.Dir(name)
+	baseDir := filepath.Dir(name)
 	_, err = au.fs.Stat(baseDir)
 	if os.IsNotExist(err) {
-		au.fs.MkdirAll(baseDir, 0755)
+		_ = au.fs.MkdirAll(baseDir, 0755)
 	}
-	// todo savepath
 	newFile, err := au.fs.Create(name)
 	if err != nil {
 		return err
@@ -39,7 +39,7 @@ func (au *aferoUploader) saveToFs(hashValue string, f File) error {
 }
 
 func (au *aferoUploader) Upload(fh FileHeader) (*Image, error) {
-	info, err := DecodeImageInfo(fh.File)
+	info, err := DecodeImageInfo(fh)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (au *aferoUploader) Upload(fh FileHeader) (*Image, error) {
 	if err := au.saveToFs(hashValue, fh.File); err != nil {
 		return nil, err
 	}
-	return saveToStore(au.s, hashValue, fh.Filename, info)
+	return SaveToStore(au.s, hashValue, fh.Filename, info)
 }
 
 func (au *aferoUploader) UploadFromURL(u string, filename string) (*Image, error) {
@@ -72,7 +72,7 @@ func (au *aferoUploader) UploadFromURL(u string, filename string) (*Image, error
 		return nil, err
 	}
 
-	defer removeFile(file)
+	defer RemoveFile(file)
 
 	fh := FileHeader{
 		Filename: filename,

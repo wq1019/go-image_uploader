@@ -1,8 +1,8 @@
 package image_uploader
 
 import (
-	"testing"
 	"os"
+	"testing"
 )
 
 func TestMD5HashFunc(t *testing.T) {
@@ -39,6 +39,6 @@ func TestMD5HashFunc(t *testing.T) {
 		if hashValue != test.hashValue {
 			t.Errorf("MD5HashFunc(%s) = %s, excepted %s", test.filename, hashValue, test.hashValue)
 		}
-		file.Close()
+		_ = file.Close()
 	}
 }

@@ -1,9 +1,9 @@
 package image_uploader
 
 import (
-	"testing"
-	"io/ioutil"
 	"io"
+	"io/ioutil"
+	"testing"
 )
 
 func TestDownloadImage(t *testing.T) {
@@ -18,14 +18,14 @@ func TestDownloadImage(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		f.Seek(0, io.SeekStart)
+		_, _ = f.Seek(0, io.SeekStart)
 		b, err := ioutil.ReadAll(f)
 		if err != nil {
 			t.Error(err)
 		}
-		removeFile(f)
+		RemoveFile(f)
 		if len(b) != int(size) {
-			t.Errorf("len(%d) != size(%d)", len(b), int(size))
+			t.Errorf("len(%d) != Size(%d)", len(b), int(size))
 		}
 	}
 }
