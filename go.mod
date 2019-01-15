@@ -5,6 +5,6 @@ require (
 	github.com/jinzhu/gorm v1.9.2
 	github.com/minio/minio-go v6.0.12+incompatible
 	github.com/spf13/afero v1.2.0
-	github.com/wq1019/go-file-uploader v1.0.1
+	github.com/wq1019/go-file-uploader v1.0.1 // indirect
 	golang.org/x/sys v0.0.0-20190115152922-a457fd036447 // indirect
 )
